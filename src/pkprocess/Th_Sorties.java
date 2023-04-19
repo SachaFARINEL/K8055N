@@ -1,122 +1,118 @@
 package pkprocess;
 
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Th_Sorties est une classe qui représente un thread qui gère les sorties du système.
+ * Il s'occupe de récupérer la structure de sorties de lancement, de la cloner et d'envoyer les valeurs analogiques
+ * ainsi que les signaux digitaux associés aux différentes sorties du système en utilisant l'objet de carte associé.
+ */
 public class Th_Sorties extends Thread {
 
-    private
+    /**
+     * Variable pour savoir si le thread doit se terminer
+     */
+    private boolean terminated = false;
 
-    // Gestion de la fin du thread
-    boolean Term = true;
-    // Temps de Cycle d'�criture des sorties (en ms)
-    int CycleSorties = 10;
-    // R�f�rence sur l'objet Lancement
-    Lancement m_L;
+    /**
+     * Cycle d'envoi des sorties en millisecondes
+     */
+    private static final int CYCLE_SORTIE = 10;
 
-    public Th_Sorties(Lancement L) {
-        m_L = L;
+    /**
+     * Objet Lancement associé au thread
+     */
+    private final Lancement lancement;
+
+    /**
+     * Constructeur de Th_Sorties
+     *
+     * @param lancement objet Lancement associé au thread
+     */
+    public Th_Sorties(Lancement lancement) {
+        this.lancement = lancement;
     }
 
+    /**
+     * Permet de terminer la thread
+     */
     public void finish() {
-        Term = false;
+        terminated = true;
     }
 
-    public void setCycleSorties(int Val) {
-        CycleSorties = Val;
-    }
-
+    /**
+     * Gère l'envoi des valeurs analogiques et des signaux digitaux associés aux sorties du système en utilisant l'objet
+     * de carte associé. Utilise une boucle while qui s'arrête lorsque la variable terminated est true. Récupère la
+     * structure de sorties de lancement, la clone et envoie les valeurs analogiques ainsi que les signaux digitaux.
+     */
     public void run() {
-
         System.out.println("Demarrage du Thread Sorties");
-
-        while (Term) {
-
-            // Mise � jour synchronis� des sorties physiques de la carte USB
-            // en fonction de l'�tat des donn�es membres de l'objet m_L.STS
-            //.
-            //.
-            //.
-
-
-            synchronized (m_L.getLockObjCarte()) {
-
-                //todo completer
-
-                StrucSorties tmp = null;
+        while (!terminated) {
+            synchronized (lancement.getLockObjCarte()) {
+                StrucSorties tmp;
                 try {
-                    tmp = (StrucSorties) m_L.getStrucSorties().clone();
+                    tmp = (StrucSorties) lancement.getStrucSorties().clone();
                 } catch (CloneNotSupportedException e) {
                     throw new RuntimeException(e);
                 }
 
-
-                //pour les sorties analogiques avec les valeurs allant de 0 à 255 d'intensité
-                //traduction aucune led allumé - full allumé !
-                m_L.getCarte().OutputAnalogChannel(1, tmp.getAnaS1());
-                m_L.getCarte().OutputAnalogChannel(2, tmp.getAnaS2());
+                lancement.getCarte().OutputAnalogChannel(1, tmp.getAnaS1());
+                lancement.getCarte().OutputAnalogChannel(2, tmp.getAnaS2());
 
                 if (tmp.isdS1()) {
-                    m_L.getCarte().SetDigitalChannel(1);
-
+                    lancement.getCarte().SetDigitalChannel(1);
                 } else {
-                    m_L.getCarte().ClearDigitalChannel(1);
+                    lancement.getCarte().ClearDigitalChannel(1);
                 }
 
                 if (tmp.isdS2()) {
-                    m_L.getCarte().SetDigitalChannel(2);
-
+                    lancement.getCarte().SetDigitalChannel(2);
                 } else {
-                    m_L.getCarte().ClearDigitalChannel(2);
+                    lancement.getCarte().ClearDigitalChannel(2);
                 }
 
-
                 if (tmp.isdS3()) {
-                    m_L.getCarte().SetDigitalChannel(3);
-
+                    lancement.getCarte().SetDigitalChannel(3);
                 } else {
-                    m_L.getCarte().ClearDigitalChannel(3);
+                    lancement.getCarte().ClearDigitalChannel(3);
                 }
 
                 if (tmp.isdS4()) {
-                    m_L.getCarte().SetDigitalChannel(4);
+                    lancement.getCarte().SetDigitalChannel(4);
 
                 } else {
-                    m_L.getCarte().ClearDigitalChannel(4);
+                    lancement.getCarte().ClearDigitalChannel(4);
                 }
-
 
                 if (tmp.isdS5()) {
-                    m_L.getCarte().SetDigitalChannel(5);
+                    lancement.getCarte().SetDigitalChannel(5);
 
                 } else {
-                    m_L.getCarte().ClearDigitalChannel(5);
+                    lancement.getCarte().ClearDigitalChannel(5);
                 }
 
-
                 if (tmp.isdS6()) {
-                    m_L.getCarte().SetDigitalChannel(6);
+                    lancement.getCarte().SetDigitalChannel(6);
 
                 } else {
-                    m_L.getCarte().ClearDigitalChannel(6);
+                    lancement.getCarte().ClearDigitalChannel(6);
                 }
 
                 if (tmp.isdS7()) {
-                    m_L.getCarte().SetDigitalChannel(7);
+                    lancement.getCarte().SetDigitalChannel(7);
 
                 } else {
-                    m_L.getCarte().ClearDigitalChannel(7);
+                    lancement.getCarte().ClearDigitalChannel(7);
                 }
 
                 if (tmp.isdS8()) {
-                    m_L.getCarte().SetDigitalChannel(8);
-
+                    lancement.getCarte().SetDigitalChannel(8);
                 } else {
-                    m_L.getCarte().ClearDigitalChannel(8);
+                    lancement.getCarte().ClearDigitalChannel(8);
                 }
-
-
             }
-
             try {
-                Thread.sleep(CycleSorties);
+                TimeUnit.MILLISECONDS.sleep(CYCLE_SORTIE);
 
             } catch (InterruptedException e) {
 
@@ -125,6 +121,4 @@ public class Th_Sorties extends Thread {
         }
         System.out.println("Fin du thread Sorties!");
     }
-
-
 }

@@ -63,6 +63,9 @@ public class Th_Process extends Thread {
         }
     }
 
+    /**
+     * This class represents a thread that processes inputs and outputs for a process.
+     */
     public void run() {
         System.out.println("Demarrage du Thread Process");
         while (!terminated) {
@@ -320,7 +323,7 @@ public class Th_Process extends Thread {
             }
 
             try {
-                waitSomeTime(CYCLE_PROCESS); // équivalent du Thread.Sleep(CycleProcess) est bloquant...
+                waitSomeTime(CYCLE_PROCESS);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -328,6 +331,9 @@ public class Th_Process extends Thread {
         System.out.println("Fin du thread Process!");
     }
 
+    /**
+     * Cette méthode permet de mettre à faux toutes les sorties de la structure de sorties.
+     */
     private void setAllSortiesToFalse() {
         strucSorties.setdS1(false);
         strucSorties.setdS2(false);
@@ -339,11 +345,20 @@ public class Th_Process extends Thread {
         strucSorties.setdS8(false);
     }
 
+    /**
+     * Cette méthode permet de réinitialiser les variables cpt et tempo.
+     */
     private void resetCptAndTempo() {
         cpt = 0;
         tempo = System.currentTimeMillis();
     }
 
+    /**
+     * Cette méthode permet de vérifier si un délai est écoulé depuis la dernière mise à jour.
+     *
+     * @param delay le délai à vérifier en millisecondes
+     * @return true si le délai est écoulé, false sinon
+     */
     private boolean isTimeElapsed(int delay) {
         return (System.currentTimeMillis() - tempo) >= delay;
     }
