@@ -57,7 +57,7 @@ public class Th_Process extends Thread {
      * @param temps nombre de temps a attendre 1s = 1000 ms
      */
     public void waitSomeTime(int temps) throws InterruptedException {
-        long tempsDePause = System.currentTimeMillis() + temps;
+        tempsDePause = System.currentTimeMillis() + temps;
         while (System.currentTimeMillis() < tempsDePause) {
             TimeUnit.MILLISECONDS.sleep(1);
         }
